@@ -42,6 +42,7 @@ require (
 
 require (
 	github.com/gin-gonic/gin v1.10.0
+	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/joho/godotenv v1.5.1
 	golang.org/x/net v0.31.0
 	golang.org/x/sys v0.27.0 // indirect

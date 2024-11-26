@@ -10,6 +10,7 @@ type MusicLibraryService interface {
 	DeleteSong(songId string) (bool, error)
 	AddSong(songRequest *interfacesx.SongAddRequest) error
 	GetAllMusicLibraryData() (*[]interfacesx.SongData, error)
+	UpdateSong(songRequest *interfacesx.SongAddRequest, songId string) error
 }
 
 type musicLibraryService struct {
@@ -38,6 +39,13 @@ func (s *musicLibraryService) AddSong(songRequest *interfacesx.SongAddRequest) e
 	return nil
 }
 
+func (s *musicLibraryService) UpdateSong(songRequest *interfacesx.SongAddRequest, songId string) error {
+	if err := s.musicLibraryRepo.UpdateSong(songRequest, songId); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s *musicLibraryService) GetAllMusicLibraryData() (*[]interfacesx.SongData, error) {
 	songs, err := s.musicLibraryRepo.GetAllMusicLibraryData()
 
@@ -52,6 +60,7 @@ func (s *musicLibraryService) GetAllMusicLibraryData() (*[]interfacesx.SongData,
 			Group: song.Group,
 			Song:  song.Song,
 			SongDetails: &model.SongDetails{
+				MusicInfoId: song.SongDetails.MusicInfoId,
 				ReleaseDate: song.SongDetails.ReleaseDate,
 				Text:        song.SongDetails.Text,
 				Link:        song.SongDetails.Link,

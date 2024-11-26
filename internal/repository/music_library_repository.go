@@ -12,6 +12,7 @@ type MusicLibraryRepository interface {
 	DeleteSong(songId string) (bool, error)
 	AddSong(songRequest *interfacesx.SongAddRequest) error
 	GetAllMusicLibraryData() (*[]model.MusicInfo, error)
+	UpdateSong(songRequest *interfacesx.SongAddRequest, songId string) error
 }
 
 type musicLibraryRepository struct {
@@ -41,6 +42,31 @@ func (r *musicLibraryRepository) AddSong(songRequest *interfacesx.SongAddRequest
 	}
 
 	if err := r.db.Create(&song).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *musicLibraryRepository) UpdateSong(songRequest *interfacesx.SongAddRequest, songId string) error {
+	var song model.MusicInfo
+	var songDetails model.SongDetails
+
+	if err := r.db.Where("id = ?", songId).First(&song).Error; err != nil {
+		return err
+	}
+	if err := r.db.Where("music_info_id = ?", songId).First(&songDetails).Error; err != nil {
+		return err
+	}
+	song.Group = songRequest.Group
+	song.Song = songRequest.Song
+	songDetails.ReleaseDate = songRequest.ReleaseDate
+	songDetails.Text = songRequest.Text
+	songDetails.Link = songRequest.Link
+
+	if err := r.db.Save(&song).Error; err != nil {
+		return err
+	}
+	if err := r.db.Save(&songDetails).Error; err != nil {
 		return err
 	}
 	return nil

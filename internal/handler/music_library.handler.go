@@ -52,6 +52,20 @@ func (h *MusicLibraryHandler) DeleteSong(c *gin.Context) {
 }
 
 func (h *MusicLibraryHandler) UpdateSong(c *gin.Context) {
+	songId := c.Param("songid")
+	var songRequest interfacesx.SongAddRequest
+
+	if err := c.ShouldBindJSON(&songRequest); err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := h.libraryService.UpdateSong(&songRequest, songId); err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, "Song update successfully")
 
 }
 

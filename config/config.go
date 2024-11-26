@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"testEffective-Mobile/internal/model"
 
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
@@ -26,12 +27,18 @@ func SetUpDatabase() (*gorm.DB, error) {
 		return nil, fmt.Errorf("error connection to db: %s", err)
 	}
 
+	if err := RunAutoMigration(db); err != nil {
+		return nil, fmt.Errorf("error running migration")
+	}
+
 	return db, nil
 
 }
 
 func RunAutoMigration(db *gorm.DB) error {
 	if err := db.AutoMigrate(
+		&model.MusicInfo{},
+		&model.SongDetails{},
 	//fill models
 	); err != nil {
 		errorMessage := fmt.Sprintf("Error migrating database %s", err)

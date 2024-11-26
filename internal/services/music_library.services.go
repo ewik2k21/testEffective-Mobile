@@ -4,12 +4,14 @@ import (
 	"testEffective-Mobile/internal/model"
 	"testEffective-Mobile/internal/repository"
 	"testEffective-Mobile/x/interfacesx"
+
+	"github.com/gin-gonic/gin"
 )
 
 type MusicLibraryService interface {
 	DeleteSong(songId string) (bool, error)
 	AddSong(songRequest *interfacesx.SongAddRequest) error
-	GetAllMusicLibraryData() (*[]interfacesx.SongData, error)
+	GetAllMusicLibraryData(c *gin.Context) (*[]interfacesx.SongData, error)
 	UpdateSong(songRequest *interfacesx.SongAddRequest, songId string) error
 }
 
@@ -46,8 +48,8 @@ func (s *musicLibraryService) UpdateSong(songRequest *interfacesx.SongAddRequest
 	return nil
 }
 
-func (s *musicLibraryService) GetAllMusicLibraryData() (*[]interfacesx.SongData, error) {
-	songs, err := s.musicLibraryRepo.GetAllMusicLibraryData()
+func (s *musicLibraryService) GetAllMusicLibraryData(c *gin.Context) (*[]interfacesx.SongData, error) {
+	songs, err := s.musicLibraryRepo.GetAllMusicLibraryData(c)
 
 	if err != nil {
 		return nil, err

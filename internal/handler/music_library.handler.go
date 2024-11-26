@@ -70,7 +70,8 @@ func (h *MusicLibraryHandler) UpdateSong(c *gin.Context) {
 }
 
 func (h *MusicLibraryHandler) GetAllMusicLibraryData(c *gin.Context) {
-	songs, err := h.libraryService.GetAllMusicLibraryData()
+
+	songs, err := h.libraryService.GetAllMusicLibraryData(c)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, "songs not found")

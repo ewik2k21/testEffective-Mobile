@@ -1,17 +1,19 @@
 package repository
 
 import (
+	"strconv"
 	"testEffective-Mobile/internal/model"
 	"testEffective-Mobile/x/interfacesx"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 type MusicLibraryRepository interface {
 	DeleteSong(songId string) (bool, error)
 	AddSong(songRequest *interfacesx.SongAddRequest) error
-	GetAllMusicLibraryData() (*[]model.MusicInfo, error)
+	GetAllMusicLibraryData(c *gin.Context) (*[]model.MusicInfo, error)
 	UpdateSong(songRequest *interfacesx.SongAddRequest, songId string) error
 }
 
@@ -72,13 +74,37 @@ func (r *musicLibraryRepository) UpdateSong(songRequest *interfacesx.SongAddRequ
 	return nil
 }
 
-func (r *musicLibraryRepository) GetAllMusicLibraryData() (*[]model.MusicInfo, error) {
+func (r *musicLibraryRepository) GetAllMusicLibraryData(c *gin.Context) (*[]model.MusicInfo, error) {
 	songs := &[]model.MusicInfo{}
 
-	if err := r.db.Preload("SongDetails").Find(songs).Error; err != nil {
+	if err := r.db.Scopes(Paginate(c)).Find(&songs).Error; err != nil {
 		return nil, err
 	}
 
 	return songs, nil
 
+}
+
+func Paginate(c *gin.Context) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		pageStr := c.DefaultQuery("page", "1")
+		page, _ := strconv.Atoi(pageStr)
+
+		if page <= 0 {
+			page = 1
+		}
+
+		pageSizeStr := c.DefaultQuery("page_size", "10")
+		pageSize, _ := strconv.Atoi(pageSizeStr)
+
+		switch {
+		case pageSize > 100:
+			pageSize = 100
+		case pageSize <= 0:
+			pageSize = 10
+		}
+
+		offset := (page - 1) * pageSize
+		return db.Offset(offset).Limit(pageSize)
+	}
 }

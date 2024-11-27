@@ -1,0 +1,149 @@
+{
+    "components": {
+        "schemas": {
+            "interfacesx.SongAddRequest": {
+                "properties": {
+                    "group": {
+                        "type": "string"
+                    },
+                    "link": {
+                        "type": "string"
+                    },
+                    "release_date": {
+                        "type": "string"
+                    },
+                    "song": {
+                        "type": "string"
+                    },
+                    "text": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "info": {
+        "contact": {},
+        "description": "API server for testEffective-Mobile",
+        "title": "TestEffective-MobileAPI",
+        "version": "1.0"
+    },
+    "openapi": "3.0.3",
+    "paths": {
+        "/music_library/add_song/": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/interfacesx.SongAddRequest"
+                            }
+                        }
+                    },
+                    "description": "song data request",
+                    "required": true,
+                    "x-originalParamName": "input"
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "summary": "Add_song"
+            }
+        },
+        "/music_library/delete_song/": {
+            "delete": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "summary": "Delete_song"
+            }
+        },
+        "/music_library/get_all_data/": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get_all_music"
+            }
+        },
+        "/music_library/get_text_song/": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "summary": "Get_song_text"
+            }
+        },
+        "/music_library/update_song/": {
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/interfacesx.SongAddRequest"
+                            }
+                        }
+                    },
+                    "description": "song data request",
+                    "required": true,
+                    "x-originalParamName": "input"
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    }
+                },
+                "summary": "Update_song"
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "https://localhost:8080/"
+        }
+    ]
+}

@@ -18,6 +18,13 @@ func NewMusicLibraryHandler(libraryService services.MusicLibraryService) *MusicL
 	}
 }
 
+// @Summary Add_song
+// @Schemes
+// @Accept json
+// @Produce json
+// @Param input body interfacesx.SongAddRequest true "song data request"
+// @Success 200 {integer} integer 1
+// @Router /music_library/add_song/ [post]
 func (h *MusicLibraryHandler) AddSong(c *gin.Context) {
 	var songRequest interfacesx.SongAddRequest
 
@@ -35,6 +42,12 @@ func (h *MusicLibraryHandler) AddSong(c *gin.Context) {
 
 }
 
+// @Summary Delete_song
+// @Schemes
+// @Accept json
+// @Produce json
+// @Success 200 {integer} integer 1
+// @Router /music_library/delete_song/ [delete]
 func (h *MusicLibraryHandler) DeleteSong(c *gin.Context) {
 	songId := c.Param("songid")
 	if songId == "" {
@@ -51,6 +64,13 @@ func (h *MusicLibraryHandler) DeleteSong(c *gin.Context) {
 
 }
 
+// @Summary Update_song
+// @Schemes
+// @Accept json
+// @Produce json
+// @Param input body interfacesx.SongAddRequest true "song data request"
+// @Success 200 {integer} integer 1
+// @Router /music_library/update_song/ [patch]
 func (h *MusicLibraryHandler) UpdateSong(c *gin.Context) {
 	songId := c.Param("songid")
 	var songRequest interfacesx.SongAddRequest
@@ -69,6 +89,12 @@ func (h *MusicLibraryHandler) UpdateSong(c *gin.Context) {
 
 }
 
+// @Summary Get_all_music
+// @Schemes
+// @Accept json
+// @Produce json
+// @Success 200 {integer} integer 1
+// @Router /music_library/get_all_data/ [get]
 func (h *MusicLibraryHandler) GetAllMusicLibraryData(c *gin.Context) {
 
 	songs, err := h.libraryService.GetAllMusicLibraryData(c)
@@ -81,6 +107,25 @@ func (h *MusicLibraryHandler) GetAllMusicLibraryData(c *gin.Context) {
 	c.JSON(http.StatusOK, songs)
 }
 
+// @Summary Get_song_text
+// @Schemes
+// @Accept json
+// @Produce json
+// @Success 200 {integer} integer 1
+// @Router /music_library/get_text_song/ [get]
 func (h *MusicLibraryHandler) GetSongText(c *gin.Context) {
+	songId := c.Param("songid")
 
+	if songId == "" {
+		c.JSON(http.StatusBadRequest, "Song id is null")
+		return
+	}
+
+	songText, err := h.libraryService.GetSongTextById(c, songId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, songText)
 }

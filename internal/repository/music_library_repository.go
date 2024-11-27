@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"strconv"
 	"testEffective-Mobile/internal/model"
 	"testEffective-Mobile/x/interfacesx"
 	"time"
 
+	filter "github.com/ActiveChooN/gin-gorm-filter"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -15,6 +15,7 @@ type MusicLibraryRepository interface {
 	AddSong(songRequest *interfacesx.SongAddRequest) error
 	GetAllMusicLibraryData(c *gin.Context) (*[]model.MusicInfo, error)
 	UpdateSong(songRequest *interfacesx.SongAddRequest, songId string) error
+	GetSongTextById(c *gin.Context, songId string) (*string, error)
 }
 
 type musicLibraryRepository struct {
@@ -77,34 +78,18 @@ func (r *musicLibraryRepository) UpdateSong(songRequest *interfacesx.SongAddRequ
 func (r *musicLibraryRepository) GetAllMusicLibraryData(c *gin.Context) (*[]model.MusicInfo, error) {
 	songs := &[]model.MusicInfo{}
 
-	if err := r.db.Scopes(Paginate(c)).Find(&songs).Error; err != nil {
+	if err := r.db.Model(songs).Scopes(filter.FilterByQuery(c, filter.ALL)).Find(&songs).Error; err != nil {
 		return nil, err
 	}
 
 	return songs, nil
 
 }
-
-func Paginate(c *gin.Context) func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		pageStr := c.DefaultQuery("page", "1")
-		page, _ := strconv.Atoi(pageStr)
-
-		if page <= 0 {
-			page = 1
-		}
-
-		pageSizeStr := c.DefaultQuery("page_size", "10")
-		pageSize, _ := strconv.Atoi(pageSizeStr)
-
-		switch {
-		case pageSize > 100:
-			pageSize = 100
-		case pageSize <= 0:
-			pageSize = 10
-		}
-
-		offset := (page - 1) * pageSize
-		return db.Offset(offset).Limit(pageSize)
+func (r *musicLibraryRepository) GetSongTextById(c *gin.Context, songId string) (*string, error) {
+	var songDetails model.SongDetails
+	if err := r.db.Model(songDetails).Scopes(filter.FilterByQuery(c, filter.PAGINATE)).Where("music_info_id = ?", songId).First(&songDetails).Error; err != nil {
+		return nil, err
 	}
+
+	return &songDetails.Text, nil
 }

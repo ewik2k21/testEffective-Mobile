@@ -13,6 +13,7 @@ type MusicLibraryService interface {
 	AddSong(songRequest *interfacesx.SongAddRequest) error
 	GetAllMusicLibraryData(c *gin.Context) (*[]interfacesx.SongData, error)
 	UpdateSong(songRequest *interfacesx.SongAddRequest, songId string) error
+	GetSongTextById(c *gin.Context, songId string) (*string, error)
 }
 
 type musicLibraryService struct {
@@ -70,4 +71,13 @@ func (s *musicLibraryService) GetAllMusicLibraryData(c *gin.Context) (*[]interfa
 		}
 	}
 	return &songsData, nil
+}
+
+func (s *musicLibraryService) GetSongTextById(c *gin.Context, songId string) (*string, error) {
+	songText, err := s.musicLibraryRepo.GetSongTextById(c, songId)
+
+	if err != nil {
+		return nil, err
+	}
+	return songText, nil
 }
